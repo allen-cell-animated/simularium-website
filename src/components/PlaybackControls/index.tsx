@@ -6,6 +6,7 @@ import { TOOLTIP_COLOR } from "../../constants/index";
 import Icons from "../Icons";
 
 const styles = require("./style.css");
+let timer: number;
 interface PlayBackProps {
     playHandler: (timeOverride?: number) => void;
     time: number;
@@ -39,9 +40,18 @@ const PlayBackControls = ({
     const [wasPlaying, setWasPlaying] = useState(false);
     const [targetPlayTime, setTargetPlayTime] = useState(-1);
 
+    // Gets called every time the play head passes through a new time value during scrubbing
     const handleTimeChange = (sliderValue: number | [number, number]): void => {
+        console.log("handleTimeChange");
         // slider can be a list of numbers, but we're just using a single value
         setTargetPlayTime(sliderValue as number);
+        console.log("clearing timer", timer);
+        window.clearTimeout(timer);
+        console.log("setting timer", timer);
+        timer = window.setTimeout(() => {
+            console.log("TIME! onTimeChange", timer);
+            onTimeChange(targetPlayTime);
+        }, 500);
         if (isPlaying) {
             setWasPlaying(true);
             pauseHandler();
@@ -49,6 +59,8 @@ const PlayBackControls = ({
     };
 
     const handleSliderMouseUp = (): void => {
+        console.log("clearing timer at mouseUp", timer);
+        window.clearTimeout(timer);
         // Resume playing at targetPlayTime if simulation was playing before,
         // otherwise just skip to targetPlayTime without resuming.
         if (wasPlaying) {

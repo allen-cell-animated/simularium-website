@@ -6,7 +6,6 @@ import { TOOLTIP_COLOR } from "../../constants/index";
 import Icons from "../Icons";
 
 const styles = require("./style.css");
-let timer: number;
 interface PlayBackProps {
     playHandler: (timeOverride?: number) => void;
     time: number;
@@ -39,19 +38,27 @@ const PlayBackControls = ({
     const [unitIndex, setUnitIndex] = useState(0);
     const [wasPlaying, setWasPlaying] = useState(false);
     const [targetPlayTime, setTargetPlayTime] = useState(-1);
+    const [timerId, setTimerId] = useState(0);
 
     // Gets called every time the play head passes through a new time value during scrubbing
     const handleTimeChange = (sliderValue: number | [number, number]): void => {
-        console.log("handleTimeChange");
-        // slider can be a list of numbers, but we're just using a single value
+        // sliderValue can be an array of numbers (representing a selected range),
+        // but we're just using a single value
+        console.log("handleTimeChange, sliderValue:", sliderValue);
         setTargetPlayTime(sliderValue as number);
-        console.log("clearing timer", timer);
-        window.clearTimeout(timer);
-        console.log("setting timer", timer);
-        timer = window.setTimeout(() => {
-            console.log("TIME! onTimeChange", timer);
-            onTimeChange(targetPlayTime);
-        }, 500);
+
+        // Fetch and re-render the agents if the user holds the play head in one spot for more
+        // than 500 ms in the middle of scrubbing (Frame is frozen while rapidly scrubbing)
+        if (timerId) window.clearTimeout(timerId);
+        // onTimeChange(sliderValue as number)
+
+        setTimerId(
+            window.setTimeout(() => {
+                console.log("TIME! sliderValue:", sliderValue);
+                onTimeChange(sliderValue as number);
+            }, 500)
+        );
+
         if (isPlaying) {
             setWasPlaying(true);
             pauseHandler();
@@ -59,8 +66,8 @@ const PlayBackControls = ({
     };
 
     const handleSliderMouseUp = (): void => {
-        console.log("clearing timer at mouseUp", timer);
-        window.clearTimeout(timer);
+        window.clearTimeout(timerId);
+
         // Resume playing at targetPlayTime if simulation was playing before,
         // otherwise just skip to targetPlayTime without resuming.
         if (wasPlaying) {
@@ -68,6 +75,7 @@ const PlayBackControls = ({
         } else {
             onTimeChange(targetPlayTime);
         }
+
         setTargetPlayTime(-1);
         setWasPlaying(false);
     };

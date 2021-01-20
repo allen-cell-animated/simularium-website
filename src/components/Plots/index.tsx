@@ -1,14 +1,14 @@
 import * as React from "react";
 import Plot from "react-plotly.js";
-import { ActionCreator } from "redux";
+// import { ActionCreator } from "redux";
 
-import { ChangeTimeAction } from "../../state/selection/types.js";
+// import { ChangeTimeAction } from "../../state/selection/types.js";
 import { PlotParamsWithKey } from "../../containers/ResultsPanel/types";
 
 interface PlotsProps {
     plotConfig: PlotParamsWithKey[];
-    time: number;
-    changeTime: ActionCreator<ChangeTimeAction>;
+    // time: number;
+    // changeTime: ActionCreator<ChangeTimeAction>;
 }
 
 const styles = require("./style.css");

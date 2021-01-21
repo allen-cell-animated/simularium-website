@@ -1,8 +1,8 @@
 import * as React from "react";
-import Plot from "react-plotly.js";
 // import { ActionCreator } from "redux";
 
 // import { ChangeTimeAction } from "../../state/selection/types.js";
+import Plot from "../Plot";
 import { PlotParamsWithKey } from "../../containers/ResultsPanel/types";
 
 interface PlotsProps {
@@ -19,24 +19,7 @@ export default class Plots extends React.Component<PlotsProps, {}> {
         return (
             <div className={styles.container}>
                 {plotConfig.map((plot: PlotParamsWithKey) => {
-                    return (
-                        <Plot
-                            key={plot.key}
-                            data={plot.data}
-                            useResizeHandler={true}
-                            layout={plot.layout}
-                            // config attributes:
-                            // https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js#L23
-                            config={{
-                                modeBarButtons: [["resetViews"]],
-                                displaylogo: false,
-                            }}
-                            // onClick={onPointClicked}
-                            // onClickAnnotation={this.clickedAnnotation}
-                            // onHover={onPlotHovered}
-                            // onSelected={onGroupSelected}
-                        />
-                    );
+                    return <Plot key={plot.key} plot={plot} />;
                 })}
             </div>
         );

@@ -171,6 +171,10 @@ const configureData = (
 export const getPlotDataConfiguredForPlotly = createSelector(
     [getPlotData, getCurrentTime],
     (plotData: RawPlotParams[], currentTime: number): PlotParamsWithKey[] => {
+        console.log(
+            "getPlotDataConfiguredForPlotly, currentTime:",
+            currentTime
+        );
         if (!plotData) return [];
         return plotData.map((plot: RawPlotParams) => {
             const layout: Partial<Layout> = configureLayout(

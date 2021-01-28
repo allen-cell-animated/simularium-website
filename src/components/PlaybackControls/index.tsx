@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Slider, Tooltip } from "antd";
+import { Button, Slider, Tooltip, InputNumber } from "antd";
 import classNames from "classnames";
 
 import { TOOLTIP_COLOR } from "../../constants/index";
@@ -45,7 +45,9 @@ const PlayBackControls = ({
     // - Gets called once when the user clicks on the slider to skip to a specific time
     // - Gets called multiple times when user is scrubbing (every time the play head
     //     passes through a time value associated with a frame)
-    const handleTimeChange = (sliderValue: number | [number, number]): void => {
+    const handleTimeChange = (
+        sliderValue: number | string | undefined
+    ): void => {
         // sliderValue can be an array of numbers (representing a selected range),
         // but we're just using a single value
         onTimeChange(sliderValue as number);
@@ -181,12 +183,19 @@ const PlayBackControls = ({
                 disabled={loading || isEmpty}
             />
             <div className={styles.time}>
-                <p>
-                    {roundedTime}{" "}
-                    <span className={styles.lastFrameTime}>
-                        / {roundedLastFrameTime} {units[unitIndex]}
-                    </span>
-                </p>
+                <InputNumber
+                    size="small"
+                    step={timeStep}
+                    min={firstFrameTime}
+                    max={lastFrameTime}
+                    value={time}
+                    onChange={handleTimeChange}
+                    disabled={loading || isEmpty}
+                />
+                {/* {roundedTime}{" "} */}
+                <span className={styles.lastFrameTime}>
+                    / {roundedLastFrameTime} {units[unitIndex]}
+                </span>
             </div>
         </div>
     );

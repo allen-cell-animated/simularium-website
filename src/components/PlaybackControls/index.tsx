@@ -72,9 +72,13 @@ const PlayBackControls = ({
     };
 
     const units = ["s", "ms", "\u03BCs", "ns"];
-    const roundNumber = (num: number) => parseFloat(Number(num).toPrecision(3));
-    const roundedTime = time ? roundNumber(time * 1000 ** unitIndex) : 0;
-    const roundedLastFrameTime = roundNumber(lastFrameTime * 1000 ** unitIndex);
+    const roundNumber = (num: number): string =>
+        parseFloat(Number(num).toPrecision(3)).toString();
+    const roundTime = (time: number | undefined): string =>
+        time ? roundNumber(time * 1000 ** unitIndex) : "0";
+    const roundedLastFrameTime: string = roundNumber(
+        lastFrameTime * 1000 ** unitIndex
+    );
 
     // Calculates display unit when lastFrameTime is updated, i.e., when a new trajectory is loaded
     useEffect(() => {
@@ -190,9 +194,9 @@ const PlayBackControls = ({
                     max={lastFrameTime}
                     value={time}
                     onChange={handleTimeChange}
-                    disabled={loading || isEmpty}
+                    disabled={loading || isEmpty || isPlaying}
+                    formatter={(value) => roundTime(value as number)}
                 />
-                {/* {roundedTime}{" "} */}
                 <span className={styles.lastFrameTime}>
                     / {roundedLastFrameTime} {units[unitIndex]}
                 </span>
